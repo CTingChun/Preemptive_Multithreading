@@ -1,41 +1,32 @@
-# Software Studio 2018 Spring Assignment 01 Web Canvas
+# Operating System 2019 Spring Checkpoint 01
 
-## Web Canvas
-<img src="example01.gif" width="700px" height="500px"></img>
+## Preemptive Multithreading
+For this programming project checkpoint, you are to write a preemptive multithreading
+package and a test case based on the single-buffer producer-consumer example.
+Preemptive multithreading means the code for each thread does not need to explicitly do a
+thread-yield in order to switch to another thread, if any. Of course, it can also do ThreadYield() if it wants.
+Depending on your implementation, you may or may not use a separate thread for the
+thread manager. If so, then you may want to define your MAXTHREADS accordingly. All
+other API should be the same. Actually, the ThreadYield() function should be available
+for preemptive threads, too, because even though the OS can always preempt a thread, a
+thread should still be able to voluntarily give up control.
 
 ## Todo
-1. **Fork the repo ,remove fork relationship and change project visibility to public.**
-2. Create your own web page with HTML5 canvas element where we can draw somethings.
-3. Beautify appearance (CSS).
-4. Design user interaction widgets and control tools for custom setting or editing (JavaScript).
-5. **Commit to "your" project repository and deploy to Gitlab page.**
-6. **Describing the functions of your canvas in REABME.md**
+1. **Turn in the source files for preemptive multithreading to be compiled using SDCC and targets EdSim51.**
+2. testpreempt.c , which contains the startup code and sets up the producer-consumer example.
+3. preemptive.c , preemptive.h , which contains the cooperative multithreading code.
 
 ## Scoring (Check detailed requirments via iLMS)
 
 | **Item**                                         | **Score** |
 | :----------------------------------------------: | :-------: |
-| Basic components                                 | 60%       |
-| Advance tools                                    | 35%       |
-| Appearance (subjective)                          | 5%        |
-| Other useful widgets (**describe on README.md**) | 1~10%     |
+| testpreempt.c                                    | 25%       |
+| preemptive.c                                     | 55%       |
+| Typescript for compilation                        | 2%        |
+| Screenshots and explanation                      | 18%       |
 
-## Reminder
-* Do not make any change to our root project repository.
-* Deploy your web page to Gitlab page, and ensure it works correctly.
-    * **Your main page should be named as ```index.html```**
-    * **URL should be : https://[studentID].gitlab.io/AS_01_WebCanvas**
-* You should also upload all source code to iLMS.
-    * .html or .htm, .css, .js, etc.
-    * source files
-* **Deadline: 2018/04/05 23:59 (commit time)**
-    * Delay will get 0 point (no reason)
-    * Copy will get 0 point
-    * "屍體" and 404 is not allowed
 
----
-
-## Put your report below here
+## Report below here
 ### 基本功能
 #### 畫筆、橡皮擦
 1. 大家應該都寫得差不多ＸＤ就不多做贅述了
