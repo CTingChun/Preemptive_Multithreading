@@ -1,4 +1,4 @@
-# Operating System 2019 Spring Checkpoint 01
+# Operating System 2019 Spring Checkpoint 02
 
 ## Preemptive Multithreading
 For this programming project checkpoint, you are to write a preemptive multithreading
