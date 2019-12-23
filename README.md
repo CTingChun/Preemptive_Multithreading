@@ -15,6 +15,7 @@ thread should still be able to voluntarily give up control.
 1. **Turn in the source files for preemptive multithreading to be compiled using SDCC and targets EdSim51.**
 2. testpreempt.c , which contains the startup code and sets up the producer-consumer example.
 3. preemptive.c , preemptive.h , which contains the cooperative multithreading code.
+4. Turn in the typescript for compiling your code using the provided Makefile.
 
 ## Scoring (Check detailed requirments via iLMS)
 
