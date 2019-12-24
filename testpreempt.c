@@ -14,8 +14,7 @@
 */
 #define BUFFER_SIZE 1
 __idata __at (0x39) char buffer[BUFFER_SIZE];
-__idata __at (0x3A) char j;
-__idata __at (0x3B) char buf;
+__idata __at (0x3A) char buf;
 
 /* [8 pts] for this function
 * the producer in this test program generates one characters at a
@@ -33,7 +32,7 @@ void Producer( void ) {
     /* @@@ [6 pt]
     * wait for the buffer to be available,
     * and then write the new data into the buffer */
-        while (buffer[0] != 0) {}
+        while (buffer[0] != 0) { }
         EA = 0;
         buffer[0] = buf;
         EA = 1;
@@ -49,7 +48,7 @@ void Producer( void ) {
 */
 void Consumer( void ) {
     /* @@@ [2 pt] initialize Tx for polling */
-    TMOD = 0x20;
+    TMOD |= 0x20;
     TH1 = (char)-6;
     SCON = 0x50;
     TR1 = 1;
@@ -59,7 +58,7 @@ void Consumer( void ) {
     * poll for Tx to finish writing (TI),
     * then clear the flag
     */
-        while (buffer[0] == 0) {}
+        while (buffer[0] == 0) { }
         EA = 0;
         SBUF = buffer[0];
         buffer[0] = 0;
@@ -81,10 +80,11 @@ void main( void ) {
     * in this function and no return.
     */
     buffer[0] = 0;
-   ThreadCreate(Producer);
-   ThreadCreate(Consumer);
-   ThreadExit();
+    ThreadCreate(Producer);
+    ThreadCreate(Consumer);
+    ThreadExit();
 }
+
 void _sdcc_gsinit_startup( void ) {
     __asm
     ljmp _Bootstrap
