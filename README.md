@@ -29,4 +29,4 @@ thread should still be able to voluntarily give up control.
 
 ## Report below here
 ### Screenchot
-<img src="ppc2.png" width="643" height="240px"></img>
+<img src="ppc2.png" width="313" height="119px"></img>
