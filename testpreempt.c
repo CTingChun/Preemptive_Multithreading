@@ -1,8 +1,8 @@
 /*
- * file: testcoop.c
+ * file: testpreempt.c
  */
 #include <8051.h>
-#include "cooperative.h"
+#include "preemptive.h"
 /*
 * @@@ [2pt]
 * declare your global variables here, for the shared buffer
@@ -28,18 +28,17 @@ void Producer( void ) {
     * initialize producer data structure, and then enter
     * an infinite loop (does not return)
     */
-   buf = 'A';
+    buf = 'A';
     while (1) {
     /* @@@ [6 pt]
     * wait for the buffer to be available,
     * and then write the new data into the buffer */
-        if (buffer[0] != 0) ThreadYield();
-        //buffer[0] = make_item();
-        else {
-            buffer[0] = buf;
-            if (buf == 'Z') buf = 'A';
-            else buf ++;
-        }
+        while (buffer[0] != 0) {}
+        EA = 0;
+        buffer[0] = buf;
+        EA = 1;
+        if (buf == 'Z') buf = 'A';
+        else buf ++;
         
     }
 }
@@ -60,9 +59,11 @@ void Consumer( void ) {
     * poll for Tx to finish writing (TI),
     * then clear the flag
     */
-        if (buffer[0] == 0) ThreadYield();
+        while (buffer[0] == 0) {}
+        EA = 0;
         SBUF = buffer[0];
         buffer[0] = 0;
+        EA = 1;
         while (!TI) { }
         TI = 0;
     }
@@ -92,3 +93,8 @@ void _sdcc_gsinit_startup( void ) {
 void _mcs51_genRAMCLEAR( void ) {}
 void _mcs51_genXINIT( void ) {}
 void _mcs51_genXRAMCLEAR( void ) {}
+void timer0_ISR(void) __interrupt(1) {
+    __asm
+    ljmp _myTimer0Handler
+    __endasm;
+}

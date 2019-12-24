@@ -1,5 +1,5 @@
 #include <8051.h>
-#include "cooperative.h"
+#include "preemptive.h"
 /*
 * @@@ [2 pts] declare the static globals here using
 * _data __at (address) type name; syntax
@@ -16,6 +16,8 @@ __idata __at (0x28) char ID;
 __idata __at (0x29) char tmp;
 __idata __at (0x2A) char i;
 __idata __at (0x2B) char currentID;
+__idata __at (0x2C) char managerID;
+
 /*
 * @@@ [8 pts]
 * define a macro for saving the context of the current thread by
@@ -66,6 +68,26 @@ extern void main( void );
 * Bootstrap is jumped to by the startup code to make the thread for
 * main, and restore its context so the thread can run.
 */
+
+void threadManager (void) {
+    do {
+        ID = ( ID == MAXTHREADS - 1 ) ? 0 : ID+1;
+        if ( threadBitmap[ID] > 0) break;
+    } while (1);
+    RESTORESTATE;
+    __asm
+        reti
+    __endasm;
+}
+
+void myTimer0Handler (void) {
+    SAVESTATE;
+    tmp = ID;
+    ID = managerID;
+    RESTORESTATE;
+    ID = tmp;
+}
+
 void Bootstrap( void ) {
 /*
 * @@@ [2 pts]
@@ -83,6 +105,10 @@ void Bootstrap( void ) {
     threadBitmap[1] = 0;
     threadBitmap[2] = 0;
     threadBitmap[3] = 0;
+    TMOD = 0;
+    IE = 0x82;
+    TR0 = 1;
+    managerID = ThreadCreate(threadManager);
     ID = ThreadCreate(main);
     RESTORESTATE;
 }
@@ -137,6 +163,7 @@ pointer array for this newly created thread ID
 h. set SP to the saved SP in step c.
 i. finally, return the newly created thread ID.
 */
+    EA = 0;
     for (i=0; i<MAXTHREADS; i++) if (!threadBitmap[i]) break;
     if (i == MAXTHREADS) return -1;
     threadBitmap[i] = 1;
@@ -157,6 +184,7 @@ i. finally, return the newly created thread ID.
     __endasm;
     savedSP[i] = SP;
     SP = tmp;
+    EA = 1;
     return i;
 }
 /*
@@ -167,6 +195,7 @@ i. finally, return the newly created thread ID.
 */
 
 void ThreadYield( void ) {
+    EA = 0;
     SAVESTATE ;
     do {
 /*
@@ -182,6 +211,7 @@ void ThreadYield( void ) {
         if ( threadBitmap[ID] > 0) break;
     } while (1);
     RESTORESTATE ;
+    EA = 1;
 }
 /*
 * ThreadExit() is called by the thread's own code to termiate
@@ -195,10 +225,12 @@ void ThreadExit( void ) {
 * and set current thread to another valid ID.
 * Q: What happens if there are no more valid threads?
 */
+    EA = 0;
     threadBitmap[ID] = 0;
     do {
         ID = ( ID == MAXTHREADS - 1 ) ? 0 : ID+1;
         if(threadBitmap[ID]>0) break;
     } while (1);
     RESTORESTATE;
+    EA = 1;
 }
